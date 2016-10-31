@@ -2,7 +2,7 @@
 Defines functions useful to generic signal data
 """
 
-from __future__ import print_function
+
 from .. import decorators as _decors
 
 
@@ -26,7 +26,7 @@ def mean(data, units, notation=None, inplace_units=True):
     defs = algs.get_notation(notation)
     tomean = lambda x: defs.mean % x
 
-    outunits = { tomean(key) : val for key, val in units.items() }
+    outunits = { tomean(key) : val for key, val in list(units.items()) }
     if inplace_units:
         units.update(outunits)
         return data.rename(columns=tomean).mean()
@@ -54,7 +54,7 @@ def std(data, units, notation=None, inplace_units=True):
     defs = algs.get_notation(notation)
     tostd = lambda x: defs.std % x
 
-    outunits = { tostd(key) : val for key, val in units.items() }
+    outunits = { tostd(key) : val for key, val in list(units.items()) }
     if inplace_units:
         units.update(outunits)
         return data.rename(columns=tostd).std()
@@ -269,7 +269,7 @@ def detrend(data, how='linear', rule=None, notation=None, suffix=None, units=Non
     #-----------
     # We rename the columns names to indicate that they are fluctuations
     if units:
-        newunits = { defs.fluctuations % el : units[el] if el in units.keys() else None for el in df.columns }
+        newunits = { defs.fluctuations % el : units[el] if el in list(units.keys()) else None for el in df.columns }
     #-----------
     
     #-----------
@@ -475,7 +475,7 @@ def test_reverse_arrangement(array, points_number=None, alpha=0.05, verbose=Fals
 
     #-----------
     # Get reverse arrangements
-    from csignal import reverse_arrangements
+    from .csignal import reverse_arrangements
     Atot = reverse_arrangements(array, points_number=points_number)
     #-----------
 

@@ -7,8 +7,8 @@ Module for general utilities
  - INCLUDE THIRD MOMENT TEST
  - CHANGE NOTATION IN QCONTROL'S SUMMARY
 """
-from __future__ import print_function
-import tests
+
+from . import tests
 
 def qcontrol(files, fileconfig,
              read_files_kw={'parse_dates':False, 'clean_dates':False, 'only_named_cols':False, 'return_units':False},
@@ -220,7 +220,7 @@ def qcontrol(files, fileconfig,
     # Identifying columns that are not part of the datetime
     variables_list=fileconfig.variables
     if type(variables_list) == dict:
-        usedvars=[ v for v in variables_list.values() if r'%' not in v ]
+        usedvars=[ v for v in list(variables_list.values()) if r'%' not in v ]
     else:
         raise TypeError('Check variables of the fileConfig object.')
     #-------------------------------------
@@ -316,11 +316,11 @@ def qcontrol(files, fileconfig,
         # TRY-EXCEPT IS A SAFETY NET BECAUSE OF THE POOR DECODING (2015-06-21 00:00 appears as 2015-06-20 24:00)
         try:
             fin=timeSeries(filepath, fileconfig, **read_files_kw)
-        except ValueError, e:
+        except ValueError as e:
             if str(e)=='unconverted data remains: 0' and cdate.hour==23:
                 continue
             else:
-                raise ValueError, e
+                raise ValueError(e)
         #-------------------------------
 
         #-------------------------------
@@ -545,7 +545,7 @@ def separateFiles(files, dlconfig, outformat='out_%Y-%m-%d_%H:%M.csv', outdir=''
     None
     """
     from os import path
-    import io
+    from . import io
     import pandas as pd
     from . import algs
 
@@ -584,7 +584,7 @@ def separateFiles(files, dlconfig, outformat='out_%Y-%m-%d_%H:%M.csv', outdir=''
             #------------
             # Creates a sequence of equaly-spaced dates based on the frequency and nicely rounded-up
             ft, lt = algs.first_last(fin)
-            ft, lt = map(parser, [ft, lt])
+            ft, lt = list(map(parser, [ft, lt]))
             labeldates = pd.Series(index=pd.date_range(start=ft, end=lt, freq='min')).resample(frequency).index
             nfiles=len(labeldates)
             if nfiles == 0:
@@ -718,19 +718,19 @@ def correctDrift(drifted, correct_drifted_vars=None, correct=None,
     #----------------
     # This option is activated if we provide a correct dataset from which to withdraw the correction parameters
     if get_fit:
-        for slw, fst in rwvars.iteritems():
+        for slw, fst in rwvars.items():
             slow=correct[slw]
             fast=drifted[fst]
             #----------------
             # Check to see if the frequency in both datasets are the same. Otherwise we are comparing different things
             try:
                 if pd.infer_freq(correct.index) == pd.infer_freq(drifted.index):
-                    slow, fast = map(np.array, [slow, fast] )
+                    slow, fast = list(map(np.array, [slow, fast] ))
                 else:
                     print('Frequencies must be the same, however, inferred frequencies appear to be different. Plese check.')
             except TypeError:
                 print('Cannot determine if frequencies are the same. We will continue but you should check')
-                slow, fast = map(np.array, [slow, fast] )
+                slow, fast = list(map(np.array, [slow, fast] ))
             #----------------
     
             #----------------
@@ -763,7 +763,7 @@ def correctDrift(drifted, correct_drifted_vars=None, correct=None,
             cors.to_csv(fit_file, index=True)
             if units:
                 with open(fit_file+'.units', 'wt') as fou:
-                    for key, item in units.iteritems():
+                    for key, item in units.items():
                         fou.write('{"%s":"%s"}\n' % (key,item))
         #----------------
 
@@ -777,7 +777,7 @@ def correctDrift(drifted, correct_drifted_vars=None, correct=None,
     # Applies the fit column by column
     if apply_fit:
         corrected=drifted.copy()
-        for slw, fst in rwvars.iteritems():
+        for slw, fst in rwvars.items():
             coefs = np.array(cors.loc['{}_{}'.format(slw,fst), ['angular','linear']])
             corrected[ fst ] = np.poly1d(coefs)(drifted[ fst ])
     else:

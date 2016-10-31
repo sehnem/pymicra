@@ -2,7 +2,7 @@
 """
 Python Micrometeorological Analysis tool - Pymicra
 """
-from __future__ import print_function
+
 import os
 
 #-----------

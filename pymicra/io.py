@@ -1,7 +1,7 @@
 """
 Defines some useful functions to aid on the input/output of data
 """
-from __future__ import print_function
+
 
 
 #-------------------------------------------
@@ -191,7 +191,7 @@ def read_fileConfig(dlcfile):
     globs={}
     dlcvars={}
     try:
-        execfile(dlcfile, globs, dlcvars)
+        exec(compile(open(dlcfile).read(), dlcfile, 'exec'), globs, dlcvars)
     except NameError:
         print('This version of python does not have an execfile function. This workaround should work but is yet to be fully tested')
         with open(dlcfile) as f:
@@ -213,12 +213,12 @@ def _read_dlc(dlcfile):
     Then the .dlc should have: variables={0:'%Y-%m-%d %H:%M:%S',1:'u',2:'v'}. This is the default csv format of
     CampbellSci dataloggers. To disable this feature, you should parse the file with read_csv using the kw: quoting=3.
     """
-    from core import dataloggerConfig
+    from .core import dataloggerConfig
 
     globs={}
     dlcvars={}
     try:
-        execfile(dlcfile, globs, dlcvars)
+        exec(compile(open(dlcfile).read(), dlcfile, 'exec'), globs, dlcvars)
     except NameError:
         print('This version of python does not have an execfile function. This workaround should work but is yet to be fully tested')
         with open(dlcfile) as f:
@@ -251,12 +251,12 @@ def read_site(sitefile):
     pymicra.siteConfig
         pymicra site configuration object
     """
-    from core import siteConfig, siteConfig
+    from .core import siteConfig, siteConfig
 
     globs={}
     sitevars={}
     try:
-        execfile(sitefile, globs, sitevars)
+        exec(compile(open(sitefile).read(), sitefile, 'exec'), globs, sitevars)
     except NameError:
         print('This version of python does not have an execfile function. This workaround should work but is yet to be fully tested')
         with open(sitefile) as f:
@@ -320,11 +320,11 @@ def _get_printable(data, units, to_tex_cols=True, to_tex_units=True):
     """
     if to_tex_cols==True:
         from .constants import greek_alphabet
-        columns=[ u'\\'+c if c in greek_alphabet.values() else c for c in data.columns ]
-        units={ u'\\'+ c if c in greek_alphabet.values() else c : v for c,v in units.iteritems() }
+        columns=[ '\\'+c if c in list(greek_alphabet.values()) else c for c in data.columns ]
+        units={ '\\'+ c if c in list(greek_alphabet.values()) else c : v for c,v in units.items() }
     if to_tex_units==True:
         from .util import _printUnit as pru
-        units={ k : pru(v) for k,v in units.iteritems() }
+        units={ k : pru(v) for k,v in units.items() }
     columns=[ r'$\rm '+fl+r'\, \left({0}\right)$'.format(units[fl]) for fl in columns ]
     df=data.copy()
     df.columns=columns

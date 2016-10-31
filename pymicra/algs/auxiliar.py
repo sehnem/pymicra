@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 """
 """
 
@@ -69,7 +69,7 @@ def testValid(df_valid, testname='', falseverbose=True, trueverbose=True, filepa
         print(basename(filepath), ': !FAILED',testname,'test!\n')
         if falseverbose:
             print('Failed variable(s):', ', '.join(failed),'\n')
-            print
+            print()
         return False, failed
     else:
         if trueverbose: print(basename(filepath),'passed',testname,'test')

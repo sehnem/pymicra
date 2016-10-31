@@ -92,7 +92,7 @@ def parseUnits(unitstr):
     elif isinstance(unitstr, list):
         return [ ureg[el].u for el in unitstr ]
     elif isinstance(unitstr, dict):
-        return { key: ureg[el].u for key, el in unitstr.items() }
+        return { key: ureg[el].u for key, el in list(unitstr.items()) }
 
 
 def convert_to(data, inunit, outunit, inplace_units=False, key=None): 
@@ -157,7 +157,7 @@ def convert_cols(data, guide, units, inplace_units=False):
 
     #-------
     # We first turn it into a numpy array to make the conversion using pint natively
-    for col, outunit in guide.iteritems():
+    for col, outunit in guide.items():
         aux = Q_(data[ col ].values, units[ col ])
         aux = aux.to(outunit)
         data.loc[:, col] = aux
@@ -192,7 +192,7 @@ def convert_indexes(data, guide, units, inplace_units=False):
 
     #-------
     # We first turn it into a numpy array to make the conversion using pint natively
-    for idx, outunit in guide.iteritems():
+    for idx, outunit in guide.items():
         aux = data[ idx ] * units[ idx ]
         aux = aux.to(outunit)
         data.loc[ idx ] = aux.magnitude
@@ -228,7 +228,7 @@ def with_units(data, units):
     elif isinstance(data, pd.Series):
         #---------
         # We check if it's a column by the name of the Series
-        if data.name in units.keys() or isinstance(data.index, pd.DatetimeIndex):
+        if data.name in list(units.keys()) or isinstance(data.index, pd.DatetimeIndex):
             data = pd.DataFrame(data, columns=[ data.name ])
             cols = data.columns
         #---------
@@ -239,8 +239,8 @@ def with_units(data, units):
             cols = data.index
         #---------
     #-------------
-    unts = [ '<{}>'.format(units[c]) if c in units.keys() else '<?>' for c in cols ]
-    columns = pd.MultiIndex.from_tuples(zip(cols, unts))
+    unts = [ '<{}>'.format(units[c]) if c in list(units.keys()) else '<?>' for c in cols ]
+    columns = pd.MultiIndex.from_tuples(list(zip(cols, unts)))
     if isinstance(data, pd.DataFrame):
         data.columns = columns
     elif isinstance(data, pd.Series):

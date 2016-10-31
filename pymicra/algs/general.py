@@ -1,6 +1,6 @@
 """
 """
-from __future__ import print_function
+
 import pandas as pd
 import numpy as np
 
@@ -48,12 +48,12 @@ def splitData(data, rule='30min', return_index=False, **kwargs):
     elif type(rule) == int:
         out = [ data.iloc[ rule*i : rule*(i+1) ] for i in range(0, len(data)/rule) ]
     else:
-        from itertools import izip_longest as izip
+        from itertools import zip_longest as izip
         #---------
         # We first create the index in which we base our separation
         # THIS STEP CAN PROBABLY BE IMPROVED
         res_dates = pd.Series(index=data.index).resample(rule, **kwargs).index
-        intervals = izip(res_dates, res_dates[1:], fillvalue=data.index[-1] + pd.DateOffset(microseconds=2))
+        intervals = zip(res_dates, res_dates[1:], fillvalue=data.index[-1] + pd.DateOffset(microseconds=2))
         #---------
 
         out = [ data.loc[ bdate:edate - pd.DateOffset(microseconds=1) ] for bdate, edate in intervals ]
@@ -396,11 +396,11 @@ def name2date(filename, dlconfig):
 
     :Warning: Needs to be optimized in order to read question markers also after the date
     """
-    from itertools import izip_longest
+    from itertools import zip_longest
     import datetime as dt
     
     filename_format=dlconfig.filename_format
-    f=''.join([ s for s,v in izip_longest(filename, filename_format) if v!='?' ])
+    f=''.join([ s for s,v in zip_longest(filename, filename_format) if v!='?' ])
     fmt=filename_format.replace('?','')
     cdate=dt.datetime.strptime(f, fmt)
     return cdate
@@ -513,7 +513,7 @@ def latexify(variables, math_mode=True):
     latex = []
     for var in variables:
         new = var
-        for letter in greek_alphabet.values():
+        for letter in list(greek_alphabet.values()):
             new = new.replace(letter, r'\{}'.format(letter))
         if math_mode:
             latex.append('${}$'.format(new))

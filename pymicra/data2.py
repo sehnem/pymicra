@@ -2,7 +2,7 @@
 Defines functions useful to generic signal data
 """
 
-from __future__ import print_function
+
 from . import decorators as _decors
 
 
@@ -26,7 +26,7 @@ def mean(data, units, notation=None, inplace_units=True):
     defs = algs.get_notation(notation)
     tomean = lambda x: defs.mean % x
 
-    outunits = { tomean(key) : val for key, val in units.items() }
+    outunits = { tomean(key) : val for key, val in list(units.items()) }
     if inplace_units:
         units.update(outunits)
         return data.rename(columns=tomean).mean()
@@ -54,7 +54,7 @@ def std(data, units, notation=None, inplace_units=True):
     defs = algs.get_notation(notation)
     tostd = lambda x: defs.std % x
 
-    outunits = { tostd(key) : val for key, val in units.items() }
+    outunits = { tostd(key) : val for key, val in list(units.items()) }
     if inplace_units:
         units.update(outunits)
         return data.rename(columns=tostd).std()
@@ -80,7 +80,7 @@ def rotate2D(data, notation=None):
     """
     from math import atan2, sqrt
     import numpy as np
-    import algs
+    from . import algs
 
     #-------
     # Getting the names for u, v, w
@@ -142,7 +142,7 @@ def trend(data, how='linear', rule=None, window=1200, block_func='mean', center=
         trends of data input
     """
     import pandas as pd
-    import algs
+    from . import algs
     import numpy as np
 
     how=algs.stripDown(how.lower(), args='-_')
@@ -269,7 +269,7 @@ def detrend(data, how='linear', rule=None, notation=None, suffix=None, units=Non
     #-----------
     # We rename the columns names to indicate that they are fluctuations
     if units:
-        newunits = { defs.fluctuations % el : units[el] if el in units.keys() else None for el in df.columns }
+        newunits = { defs.fluctuations % el : units[el] if el in list(units.keys()) else None for el in df.columns }
     #-----------
     
     #-----------
@@ -462,7 +462,7 @@ def reverse_arrangement(array, points_number=None, alpha=0.05, verbose=False):
 
     Still not adapted for dataframes
     """
-    import algs
+    from . import algs
     import numpy as np
 
     #-----------

@@ -1,7 +1,7 @@
 """
 Defines classes that are the basis of Pymicra
 """
-from __future__ import print_function
+
 from . import decorators as _decors
 
 
@@ -103,9 +103,9 @@ class fileConfig(object):
         if self.date_cols:
             self.date_col_names = [ self.variables[ idx ] for idx in self.date_cols ]
         else:
-            date_cols = { k : it for (k, it) in self.variables.iteritems() if '%' in it }
-            self.date_col_names = date_cols.values()
-            self.date_cols = date_cols.keys()
+            date_cols = { k : it for (k, it) in self.variables.items() if '%' in it }
+            self.date_col_names = list(date_cols.values())
+            self.date_cols = list(date_cols.keys())
 
 
     def _check_consistency(self):
@@ -113,8 +113,8 @@ class fileConfig(object):
         Checks consistency of fileConfig
         Currently only checks every key of self.units dictionary agaisnt values of variables dict.
         """
-        for key in self.units.keys():
-            if key not in self.variables.values():
+        for key in list(self.units.keys()):
+            if key not in list(self.variables.values()):
                 print('fileConfig WARNING!:\n    {} is defined in "units" but not defined in "variables"!'.format(key))
 
 
@@ -126,12 +126,12 @@ class fileConfig(object):
         if self.skiprows==None:
             self.skiprows = []
         elif isinstance(self.skiprows, int):
-            self.skiprows = range(self.skiprows)
+            self.skiprows = list(range(self.skiprows))
 
         if self.header_lines==None:
             self.header_lines = []
         elif isinstance(self.header_lines, int):
-            self.header_lines = range(self.header_lines)
+            self.header_lines = list(range(self.header_lines))
 
         self.skiprows = list(set(self.skiprows) | set(self.header_lines))
 
@@ -179,7 +179,7 @@ class siteConfig(object):
         #---------
         # If from file keyword exists then we get it from there
         if from_file:
-            from io import read_site
+            from .io import read_site
             siteconf = read_site(from_file)
             self.__dict__.update(siteconf.__dict__)
             return
@@ -353,9 +353,9 @@ class Notation(object):
                     'parameter':'variable' }
 
         dic = self.__dict__
-        for key, val in dic.items():
+        for key, val in list(dic.items()):
             short=key
-            for lon in aliases.keys():
+            for lon in list(aliases.keys()):
                 short = short.replace(lon, aliases[lon])
             if key!=short:
                 dic.update({short:val})
@@ -389,7 +389,7 @@ class _myData(object):
         defs = _algs.get_notation(notation)
         newdic = self.dic.copy()
         tomean = lambda x: defs.mean % x
-        newdic = { tomean(key) : val for key, val in self.dic.items() }
+        newdic = { tomean(key) : val for key, val in list(self.dic.items()) }
         self = self.df.copy()
         return _myData(self.rename(columns=tomean).mean(), newdic)
 

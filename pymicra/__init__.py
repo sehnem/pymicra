@@ -22,22 +22,22 @@ try:
 except ImportError:
     print('No pint installed yet. Install pint!')
 #---------
-import decorators
+from . import decorators
 
-from io import *
-from util import *
-from micro import *
-from signal import *
-from core import *
+from .io import *
+from .util import *
+from .micro import *
+from .signal import *
+from .core import *
 
-import io
-import physics
-import util
-import constants
-from micro import spectral
-import micro
-import algs
-import methods
+from . import io
+from . import physics
+from . import util
+from . import constants
+from .micro import spectral
+from . import micro
+from . import algs
+from . import methods
 
 notation = Notation()
 

@@ -27,8 +27,8 @@ def _to_unitsCsv(self, units, filename, **kwargs):
 
     data = self.copy()
     cols = data.columns
-    unts = [ str(units[c]) if c in units.keys() else '' for c in cols ]
-    columns = pd.MultiIndex.from_tuples(zip(cols, unts))
+    unts = [ str(units[c]) if c in list(units.keys()) else '' for c in cols ]
+    columns = pd.MultiIndex.from_tuples(list(zip(cols, unts)))
     data = data.copy()
     data.columns = columns
     data.to_csv(filename, **kwargs)
@@ -154,7 +154,7 @@ def _xplot(self, xcol, reverse_x=False, return_ax=False,
     #-----------
     # Try to display letters in the latex mathematical environment
     if latexify:
-	df.columns = algs.latexify(df.columns)
+        df.columns = algs.latexify(df.columns)
         xcol = algs.latexify([xcol])[0]
     #-----------
 
@@ -170,7 +170,7 @@ def _xplot(self, xcol, reverse_x=False, return_ax=False,
     subcols = df.columns.drop(fixed_cols)
     #--------
     # Checks for double xlim kwarg
-    if kwargs.has_key('xlim'):
+    if 'xlim' in kwargs:
         xlim = kwargs['xlim']
         kwargs.pop('xlim')
     else:

@@ -5,7 +5,7 @@ be used with the qcontrol().
 They all return True for the columns that pass the test and False for the columns
 that fail the test.
 """
-from __future__ import print_function
+
 from . import algs
 
 def check_replaced(replaced, max_count=180):
@@ -118,7 +118,7 @@ def check_RA(data, detrend=True, detrend_kw={'how':'linear'},
     valid: pd.Series
         True or False for each column. If True, column passed the test
     """
-    import signal as pmdata
+    from . import signal as pmdata
 
     #-----------
     # Detrend the data
@@ -164,7 +164,7 @@ def check_std(data, tables, detrend=False, detrend_kw={'how':'linear'}, chunk_si
     valid: pandas.Series
         contatining True of False for each column. True means passed the test.
     """
-    import signal as pmdata
+    from . import signal as pmdata
     import numpy as np
     import pandas as pd
     from . import algs
@@ -223,7 +223,7 @@ def check_limits(data, tables, max_percent=1., replace_with='interpolation'):
     """
     from . import trend as pmtrend
     import numpy as np
-    import algs
+    from . import algs
     import pandas as pd
 
     df = data.copy()
@@ -303,8 +303,8 @@ def check_spikes(data, chunk_size='2min',
         maximum percentage of spikes to allow.
     """
     import pandas as pd
-    import algs
-    import signal as pmdata
+    from . import algs
+    from . import signal as pmdata
 
     #------------
     if replace_with=='trend':

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from __future__ import print_function
+
 """
 Maybe add
 
@@ -69,7 +69,7 @@ def preProcess(data, units, notation=None, use_means=False, expand_temperature=T
     #---------
     # First convert any temperature if it is still in Celsius
     temps = { col:'kelvin' for col in data.columns if col in [defs.thermodyn_temp, defs.virtual_temp, defs.sonic_temp, defs.potential_temp] }
-    print('Converting {} to kelvin ... '.format(' and '.join(temps.keys())), end='')
+    print('Converting {} to kelvin ... '.format(' and '.join(list(temps.keys()))), end='')
     data = data.convert_cols(temps, units, inplace_units=True)
     print("Done!")
     #---------

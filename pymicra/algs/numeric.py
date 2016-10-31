@@ -34,8 +34,8 @@ def _integrate_df(self, how='trapz', dateindex=False, **kwargs):
     if how in available_rules:
         rule = integrate.__getattribute__(how)
     else:
-        print('Unsupported integration rule: %s' % (how))
-        print('Expecting one of these sample-based integration rules: %s' % (str(list(available_rules))))
+        print(('Unsupported integration rule: %s' % (how)))
+        print(('Expecting one of these sample-based integration rules: %s' % (str(list(available_rules)))))
         raise AttributeError
     if dateindex:
         xaxis=df.index.astype(np.int64)

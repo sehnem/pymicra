@@ -2,4 +2,5 @@
 *.swp
 *.bkp
 *.bak
+.idea
 docs/_build/html

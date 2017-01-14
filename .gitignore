@@ -4,3 +4,5 @@
 *.bak
 .idea
 docs/_build/html
+build/
+pymicra.egg-info
